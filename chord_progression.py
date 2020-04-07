@@ -42,7 +42,7 @@ def give_chords(progression, random_chords=False):
     else:
         import random
         midi_chords_list = get_midi_note.chord_to_midiNotes(
-            chord_progressions_dict[progression][random.randint(0, 3)] + "4")
+            chord_progressions_dict[progression][random.randint(0, 100)%4] + "4")
     return midi_chords_list
 
 # input_progressions()
