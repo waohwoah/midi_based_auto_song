@@ -4,6 +4,7 @@ notes_order = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 def notation_to_midiNote(note):
     midi_note = 20
     note = note.strip()[:3].upper()
+    # print("Note received = {}".format(note))
     if note[1] is 'B':
         note = chr(ord(note[0]) - 1) + '#' + note[2]
     if note[0].isalpha() and note[1] is '#' and int(note[2]) >= 0:
@@ -64,7 +65,10 @@ def chord_to_midiNotes(chord):
     if chord[1] is '#':
         chord = chr(ord(chord[0]) + 1) + 'b' + chord[2:]
     octave = int(chord[-1])
-    chord_notes = Chord(chord[:-1])
+    try:
+        chord_notes = Chord(chord[:-1])
+    except:
+        print("Invalid Chord = {}".format(chord))
     # print("Chord {} Notes: {}".format(chord, chord_notes))
     midi_notes = list()
     for i, note in enumerate(chord_notes.components()):
@@ -83,4 +87,4 @@ def trial():
     print("Chord {} MIDI Notes: {}".format('B#m75', chord_to_midiNotes('b#m75')))
 
 
-trial()
+# trial()
