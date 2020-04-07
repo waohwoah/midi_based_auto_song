@@ -17,14 +17,16 @@ for track in track_list:
 
 for i in range(16):
     for track in track_list:
-        chord = chord_progression.give_chords('C major', random_chords=True)
+        if random.randint(0, 100) % 2 is 0:
+            chord = chord_progression.give_chords('C major', random_chords=True)
+        else:
+            chord = chord_progression.give_chords('Ab major', random_chords=True)
         for note in chord:
-            # print("MIDI Note generated = {}".format(note))
             track.append(Message('note_on', note=note, velocity=random.randint(50, 100), time=0))
         for i, note in enumerate(chord):
             if i is 0:
                 track.append(
-                    Message('note_off', note=note, velocity=127, time=int(480 * 1 * math.pow(2, random.randint(0, 2)))))
+                    Message('note_off', note=note, velocity=127, time=int(480 * math.pow(2, random.randint(1, 2)))))
             else:
                 track.append(Message('note_off', note=note, velocity=127, time=0))
 

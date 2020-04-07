@@ -6,7 +6,10 @@ def notation_to_midiNote(note):
     note = note.strip()[:3].upper()
     # print("Note received = {}".format(note))
     if note[1] is 'B':
-        note = chr(ord(note[0]) - 1) + '#' + note[2]
+        if note[0] is 'A':
+            note = 'A#' + note[2]
+        else:
+            note = chr(ord(note[0]) - 1) + '#' + note[2]
     if note[0].isalpha() and note[1] is '#' and int(note[2]) >= 0:
         if note[0] is 'A':
             midi_note += 2
@@ -85,6 +88,5 @@ def trial():
     print("Chord {} MIDI Notes: {}".format('A5', chord_to_midiNotes('A5')))
     print("Chord {} MIDI Notes: {}".format('EM6', chord_to_midiNotes('E6')))
     print("Chord {} MIDI Notes: {}".format('B#m75', chord_to_midiNotes('b#m75')))
-
 
 # trial()

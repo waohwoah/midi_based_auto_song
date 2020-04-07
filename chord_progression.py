@@ -34,15 +34,19 @@ def input_progressions():
 
 
 def give_chords(progression, random_chords=False):
-    progression = progression.strip().upper()
+    progression = progression.strip()
+    if progression[1] is 'b':
+        progression = progression[0].upper() + progression[1] + progression[2:].upper()
+    else:
+        progression = progression.upper()
     midi_chords_list = list()
     if not random_chords:
         for chord in chord_progressions_dict[progression]:
             midi_chords_list.append(get_midi_note.chord_to_midiNotes(chord + "4"))
     else:
-        import random
+        import sensible_randoms
         midi_chords_list = get_midi_note.chord_to_midiNotes(
-            chord_progressions_dict[progression][random.randint(0, 100)%4] + "4")
+            chord_progressions_dict[progression][sensible_randoms.non_repeated_randoms()] + "4")
     return midi_chords_list
 
 # input_progressions()
