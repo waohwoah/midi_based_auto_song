@@ -1,4 +1,3 @@
-
 # to get a MIDI_Chord object:
 #   1.  import notes_midi_converter
 #   2.  notes_midi_converter.get_random_chord([optiona]scale = one_of_the_elements in chord_progression.chord_progressions_dict)
