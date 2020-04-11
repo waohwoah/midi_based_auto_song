@@ -39,7 +39,7 @@ class MIDI_Chord:
         return self.MIDI_beats_after_last_chord
 
     def get_ticks_after_last(self):
-        return self.MIDI_beats_after_last_chord * 480
+        return self.MIDI_beats_after_last_chord * 481
 
 
 nchord = MIDI_Chord()
