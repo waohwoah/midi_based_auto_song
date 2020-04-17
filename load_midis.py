@@ -2,17 +2,16 @@ import pretty_midi, mido
 from os import listdir
 from os.path import isfile, join, isdir
 
-root_path = 'E:\Project Stuff\lmd_full'
+root_path = "E:\Project Stuff\lmd_full"
 midi_directory_paths = [join(root_path, midi_directory_name) for midi_directory_name in listdir(root_path) if
                         isdir(join(root_path, midi_directory_name))]
 for i in range(1):
     directory = midi_directory_paths[0]
-# for directory in midi_directory_paths:
+    # for directory in midi_directory_paths:
     print(":->\tDirectory: {}".format(directory))
     for file in [join(directory, midi_file_name) for midi_file_name in listdir(directory) if
                  isfile(join(directory, midi_file_name))]:
         print("\t:->{}".format(file))
-
 
 # for file in onlyfiles:
 #     try:
