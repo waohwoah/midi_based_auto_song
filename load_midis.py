@@ -1,4 +1,4 @@
-import pretty_midi, mido
+import pretty_midi, mido, read_midi, learn
 from os import listdir
 from os.path import isfile, join, isdir
 
@@ -11,7 +11,11 @@ for i in range(1):
     print(":->\tDirectory: {}".format(directory))
     for file in [join(directory, midi_file_name) for midi_file_name in listdir(directory) if
                  isfile(join(directory, midi_file_name))]:
-        print("\t:->{}".format(file))
+        try:
+            print("\t:->{}".format(file))
+            read_midi.train_model(file)
+        except:
+            print("Invalid MIDI file @ path: {}".format(file))
 
 # for file in onlyfiles:
 #     try:

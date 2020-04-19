@@ -1,21 +1,42 @@
-import mido, pretty_midi
+import mido, learn
+import numpy as np
 
-sample_midi_path = 'E:\\Project Stuff\\lmd_full\\0\\0a14c3717b42adbaf474848851b744d0.mid'
-mid = mido.MidiFile(sample_midi_path)
+learn.create_model()
 
-for i, track in enumerate(mid.tracks):
-    print('Track {}: {}'.format(i, track.name))
 
-pm = pretty_midi.PrettyMIDI(sample_midi_path)
-for i, key_change in enumerate(pm.key_signature_changes):
-    print(
-        '->{}. Key {} starting at time {:.2f}'.format(i + 1, pretty_midi.key_number_to_key_name(key_change.key_number),
-                                                      key_change.time))
+def get_biggest_track(midi_path):
+    mid = mido.MidiFile(midi_path)
+    key_count = 0
+    key = 0
+    for msg in mid:
+        if msg.is_meta and msg.type == 'key_signature':
+            key = msg.key
+            # print("Key = {}".format(key))
+            key_count += 1
+    if key_count is not 1:
+        return None
+    max_track_index, max_track_length = max(
+        enumerate([len(set([msg.note for msg in track if (msg.type is 'note_on' and msg.time is not 0)])) for
+                   track in mid.tracks]), key=lambda x: x[1])
+    # print("Biggest Track = {}: {}(Unique Notes = {})".format(max_track_index, mid.tracks[max_track_index].name,
+    #                                                          max_track_length))
+    return key, [msg for msg in mid.tracks[max_track_index] if msg.type is 'note_on' and msg.time is not 0]
 
-print("Ticks/Beat = {}".format(mid.ticks_per_beat))
 
-for i, msg in enumerate([msg for msg in mid.tracks[3] if msg.type is 'note_on']):
-    print("Note Number = {}:".format(i + 1))
-    print("\tNote = {}".format(msg.note))
-    print("\tVelocity = {}".format(msg.velocity))
-    print("\tBeats since last note = {}".format(msg.time / mid.ticks_per_beat))
+def train_model(midi_path):
+    key, track_stream = get_biggest_track(midi_path)
+    key = key.upper()
+    if track_stream is None:
+        print("MIDI file has multiple/no detected keys!\nSkipping to next file...")
+    else:
+        datablock = []
+        for note_msg in track_stream:
+            datablock.append([-1, note_msg.note, note_msg.velocity, note_msg.time])
+        datablock = np.array(datablock)
+        # print("Datablock = {}".format(datablock))
+        learn.train(datablock)
+        print("Starting point for generation = {}".format(datablock[2]))
+        # print("Sample Song of length: {} after latest training:{}".format(100, learn.predict(datablock[2], 100)))
+
+
+train_model('E:\\Project Stuff\\lmd_full\\0\\0a14c3717b42adbaf474848851b744d0.mid')
