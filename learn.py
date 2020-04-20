@@ -78,6 +78,7 @@ def train(datablock, reps_per_block):
 
 def predict(starting_msg, music_length):
     global music_model
+    starting_msg = scaler.fit_transform(starting_msg)
     generationOutput = []
     individual = starting_msg
     for i in range(music_length):

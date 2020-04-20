@@ -14,7 +14,7 @@ for directory in midi_directory_paths:
     for file in [join(directory, midi_file_name) for midi_file_name in listdir(directory) if
                  isfile(join(directory, midi_file_name))]:
         try:
-            print("\t:->{}".format(file))
+            print("\t:->File No. {}: {}".format(files_trained + 1, file))
             read_midi.train_model(file)
             files_trained += 1
             if files_trained % 5 is 0:
@@ -22,3 +22,4 @@ for directory in midi_directory_paths:
                 model_storage.save()
         except:
             print("Invalid MIDI file @ path: {}".format(file))
+
