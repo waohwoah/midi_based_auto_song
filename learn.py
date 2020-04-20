@@ -3,13 +3,32 @@ import random
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM
-import matplotlib.pyplot as plt
+from keras.models import model_from_json
 
 np.random.seed(1)
 scaler = MinMaxScaler(feature_range=(0, 1))
 look_back = 1
 
 music_model = None
+
+
+def save_model():
+    global music_model
+    model_json = music_model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    music_model.save_weights("model.h5")
+
+
+def load_model():
+    global music_model
+    saved_json_file = open("model.json", "r")
+    loaded_json_model = saved_json_file.read()
+    saved_json_file.close()
+    music_model = model_from_json(loaded_json_model)
+    music_model.load_weights("model.h5")
+    music_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    music_model.summary()
 
 
 # generate temp dataset
@@ -45,19 +64,21 @@ def create_model():
     music_model = Sequential()
     music_model.add(LSTM((4), batch_input_shape=(None, 1, 4), return_sequences=True))
     music_model.add(LSTM((4), return_sequences=False))
+    # music_model.add(LSTM((4), return_sequences=False))
     music_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 
-def train(datablock):
+def train(datablock, reps_per_block):
     global music_model
     # shape of dataset = (number_of_samples, number_of_features)
     datablock = scaler.fit_transform(datablock)
     trainX, trainY = split_dataset(datablock)
-    music_model.fit(trainX, trainY, epochs=20)
+    music_model.fit(trainX, trainY, epochs=reps_per_block, verbose=1)
 
 
 def predict(starting_msg, music_length):
     global music_model
+    starting_msg = scaler.fit_transform(starting_msg)
     generationOutput = []
     individual = starting_msg
     for i in range(music_length):
@@ -69,5 +90,5 @@ def predict(starting_msg, music_length):
     generationOutput = np.array(generationOutput)
 
     print("Generated Output = {}".format(generationOutput))
-    plt.plot(music_model.history['loss'])
-    plt.show()
+    # plt.plot(music_model.history['loss'])
+    # plt.show()
