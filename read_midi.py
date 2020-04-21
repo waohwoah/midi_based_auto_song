@@ -25,7 +25,7 @@ def train_model(midi_path):
         key, track_stream = get_biggest_track(midi_path)
     except:
         print("MIDI file has multiple/no detected keys!\nSkipping to next file...")
-        return
+        return -1
 
     key = key.upper()
     encoded_key = 2 * (ord(key[0]) - ord('A'))
@@ -44,12 +44,12 @@ def train_model(midi_path):
     datablock = np.array(datablock)
     learn.train(datablock, reps_per_block=100)
     print("Successfully trained model for MIDI file @ path: {}".format(midi_path))
-
+    return 0
 
 def predict_from_modeL(start_msg, track_length):
-    predicted_track = learn.predict(np.array([start_msg]), track_length)
+    predicted_track = learn.predict(start_msg, track_length)
     print("Sample Song of length: {} after latest training:{}".format(100, predicted_track))
 
 
 # train_model('0a14c3717b42adbaf474848851b744d0.mid')
-predict_from_modeL([4, 65, 100, 4], 100)
+# predict_from_modeL([4, 65, 100, 4], 100)
