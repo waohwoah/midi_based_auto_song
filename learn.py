@@ -73,22 +73,22 @@ def train(datablock, reps_per_block):
     # shape of dataset = (number_of_samples, number_of_features)
     datablock = scaler.fit_transform(datablock)
     trainX, trainY = split_dataset(datablock)
-    music_model.fit(trainX, trainY, epochs=reps_per_block, verbose=1)
+    music_model.fit(trainX, trainY, epochs=reps_per_block, verbose=0)
 
 
 def predict(starting_msg, music_length):
     global music_model
-    starting_msg = scaler.fit_transform(starting_msg)
-    generationOutput = []
+    starting_msg = np.array([scaler.fit_transform(np.array([starting_msg]))])
+    generated_output = []
     individual = starting_msg
     for i in range(music_length):
         trainPredict = music_model.predict(individual)
         individual = np.array([trainPredict])
         trainPredict = scaler.inverse_transform(trainPredict)  # un-normalize data
         # print(trainPredict.shape)
-        generationOutput.append(trainPredict)
-    generationOutput = np.array(generationOutput)
-
-    print("Generated Output = {}".format(generationOutput))
+        generated_output.append(np.round(trainPredict[0]))
+    generated_output = np.array(generated_output)
+    print("Generated Output = {}".format(generated_output))
+    return generated_output
     # plt.plot(music_model.history['loss'])
     # plt.show()
